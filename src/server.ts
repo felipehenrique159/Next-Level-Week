@@ -1,10 +1,12 @@
 import express from 'express';
+import routes from './routes';
 
 const app = express();
 
-app.listen(3000);
+app.use(express.json()) 
+app.use(routes)
 
-app.get('/users',(req,res)=>{
-   res.send('Listagem de usuarios')
-})
+app.listen(3000)
+
+
 
