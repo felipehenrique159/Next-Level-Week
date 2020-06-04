@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx ts-node-dev src/server.ts",
-    "migrate": "npx knex migrate:latest --knexfile knexFile.ts migrate:latest"
+    "migrate": "knex  --knexfile knexFile.ts migrate:latest",
+    "seed": "knex  --knexfile knexFile.ts seed:run"
   },
   "repository": {
     "type": "git",
