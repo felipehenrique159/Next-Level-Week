@@ -1,7 +1,27 @@
-import { Request, Response } from 'express';
+import { Request, Response, response } from 'express';
 import connection from '../database/connection';
 
 class PointsController {
+
+    async index(req: Request,res: Response){
+        //cidade,uf 'query params para tratar com filtros'
+        const {city,uf,items} = req.query;
+        
+        const parsedItems = String(items).split(',')
+        .map(item => Number(item.trim())) //trim para anular caso tenha espaço entre virgulas
+
+        const points = await connection('points')
+
+        .join('point_items','points.id','=','point_items.point_id')
+        .whereIn('point_items.item_id',parsedItems)
+        .where('city',String(city))
+        .where('uf',String(uf))
+        .distinct()
+        .select('points.*')
+
+        return res.json(points)
+
+    }
 
 
     async show(req: Request,res: Response){
@@ -63,6 +83,9 @@ class PointsController {
         const point_id = insertedIds[0];
 
         await trx('point_items').insert(pointItems);
+
+        await trx.commit();  //se tudo der certo, grava no banco
+
         return res.json({
             id:point_id,
             ... point, //retornar todas as propriedades
